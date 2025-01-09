@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://duag1rf7l25pl"]
+
+[ext_resource type="PackedScene" uid="uid://3nq68xypirta" path="res://models/anikin.glb" id="1_047ya"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="anikin" parent="." instance=ExtResource("1_047ya")]

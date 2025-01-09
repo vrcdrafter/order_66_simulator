@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dxw60xa34sqwx"]
+
+[ext_resource type="Shader" path="res://resources/lightsaber.gdshader" id="1_jrfry"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_jrfry")
+shader_parameter/color = Color(0.0718681, 0.487089, 0.565098, 1)
+shader_parameter/size = 1.05
+shader_parameter/time = null
