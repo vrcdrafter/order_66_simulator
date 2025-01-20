@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://4jqtamlxijde"]
+
+[ext_resource type="Script" path="res://scripts/sand.gd" id="1_6sy66"]
+[ext_resource type="Texture2D" uid="uid://dxbkkoc6l7ijv" path="res://textures/sand.png" id="2_8cp0s"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_6sy66")
+oneshot = false
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+texture = ExtResource("2_8cp0s")
+hframes = 2
+vframes = 2
+
+[node name="Sprite3D2" type="Sprite3D" parent="."]
+transform = Transform3D(0.535355, 0, 0.844627, 0, 1, 0, -0.844627, 0, 0.535355, 0, 0, 0)
+texture = ExtResource("2_8cp0s")
+hframes = 2
+vframes = 2
+
+[node name="Sprite3D3" type="Sprite3D" parent="."]
+transform = Transform3D(-0.541811, 0, 0.8405, 0, 1, 0, -0.8405, 0, -0.541811, 0.0317715, 0.143134, 0.0201379)
+texture = ExtResource("2_8cp0s")
+hframes = 2
+vframes = 2
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.64753)
+
+[node name="Node3D" type="Node3D" parent="."]

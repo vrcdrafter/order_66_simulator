@@ -5,22 +5,27 @@ extends Node3D
 var state :String = "idl"
 var health :int = 10
 var flee_position :Vector3
-var t = 0.0
+
+# booleans for operation 
 var bool_die :bool = true
 var random_ting :bool = false
-
+var sand_throw_complete :bool = false
+var attack_oneshot :bool = true
 
 func _ready() -> void:
 	
 	$random_decision.start()
 
 func _process(delta: float) -> void:
-	
+	$Sprite3D/SubViewport/Label.text = str($attack_timer.time_left)
 	match  state:
 		
 		"flee":
+
+			
 			$youngling/AnimationTree.set("parameters/Blend2/blend_amount", 1)
-			t += delta * 0.001
+			$youngling/AnimationTree.set("parameters/run_add/add_amount", 1)
+			
 			self.look_at(flee_position)
 			global_position += (flee_position - global_position).normalized() * delta * 7
 			if abs(global_position - flee_position).length() < .1:
@@ -28,6 +33,7 @@ func _process(delta: float) -> void:
 			
 		"taunt":
 			self.look_at(anakin.global_position - Vector3(0,anakin.global_position.y,0))
+			$youngling/AnimationTree.set("parameters/run_add/add_amount", 0)
 			$youngling/AnimationTree.set("parameters/tease_blend/blend_amount", 1)
 			
 			var direction_to_anakin :Vector3 = abs(anakin.global_position - global_position)
@@ -51,18 +57,29 @@ func _process(delta: float) -> void:
 				random_ting = false
 
 		"attack":
-			print("attacking ")
-			t += delta * 0.001 
-			self.look_at(anakin.global_position)
-			global_position += ((anakin.global_position - Vector3(0,anakin.global_position.y,0)) - global_position).normalized() * delta * 7
+			$youngling/AnimationTree.set("parameters/run_add/add_amount", 1)
+			
+			
+			var distance = abs(global_position - anakin.global_position).length()
+			
 			if abs(global_position - anakin.global_position).length() < 4:
-				print("go back to flee ")
-				
-				flee_position = Pick_point()
-				if abs(anakin.global_position - flee_position).length() < 2:
+				if attack_oneshot:
+					$attack_timer.start()
+					$youngling/AnimationTree.set("parameters/throw_sand/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+					attack_oneshot = false
+				if sand_throw_complete:
 					flee_position = Pick_point()
-				else:
-					state = "flee"
+					if abs(anakin.global_position - flee_position).length() < 2:
+						flee_position = Pick_point()
+					else:
+						attack_oneshot = true
+						state = "flee"
+					sand_throw_complete = false
+					
+					
+			else:
+				self.look_at(anakin.global_position)
+				global_position += ((anakin.global_position - Vector3(0,anakin.global_position.y,0)) - global_position).normalized() * delta * 7
 		"die":
 			
 			if bool_die:
@@ -74,6 +91,7 @@ func _process(delta: float) -> void:
 			$youngling/AnimationTree.set("parameters/idle/blend_amount", 1)
 			$youngling/AnimationTree.set("parameters/Blend2/blend_amount", 0)
 			$youngling/AnimationTree.set("parameters/tease_blend/blend_amount", 0)
+			$youngling/AnimationTree.set("parameters/run_add/add_amount", 0)
 			var direction_to_anakin :Vector3 = abs(anakin.global_position - global_position)
 			var distance = direction_to_anakin.length()
 			if direction_to_anakin.length() < 4:
@@ -129,3 +147,11 @@ func _on_area_3d_area_entered(area: Area3D) -> void:
 
 func _on_random_decision_timeout() -> void:
 	random_ting = true
+
+
+
+func _on_attack_timer_timeout() -> void:
+	print("sand_throw_complete")
+	sand_throw_complete = true
+
+	$attack_timer.stop()
